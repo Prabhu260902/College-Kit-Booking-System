@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kit Booking System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #09090b;
+            --surface: rgba(24, 24, 27, 0.6);
+            --surface-hover: rgba(39, 39, 42, 0.8);
+            --border: rgba(255, 255, 255, 0.08);
+            --accent: #f97316;
+            --accent-hover: #ea580c;
+            --accent-glow: rgba(249, 115, 22, 0.4);
+            --text-main: #f8fafc;
+            --text-muted: #a1a1aa;
+            
+            --success: #10b981;
+            --danger: #ef4444;
+            --pending: #f59e0b;
+            --unavailable: #6b7280;
+            --bg-gradient-1: rgba(249, 115, 22, 0.08);
+            --bg-gradient-2: rgba(139, 92, 246, 0.08);
+            --input-bg: rgba(0, 0, 0, 0.2);
+            --input-focus: rgba(0, 0, 0, 0.4);
+        }
+
+        [data-theme="light"] {
+            --bg-base: #f8fafc;
+            --surface: rgba(255, 255, 255, 0.7);
+            --surface-hover: rgba(255, 255, 255, 0.9);
+            --border: rgba(0, 0, 0, 0.1);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --accent-glow: rgba(249, 115, 22, 0.2);
+            --bg-gradient-1: rgba(249, 115, 22, 0.15);
+            --bg-gradient-2: rgba(139, 92, 246, 0.15);
+            --input-bg: rgba(255, 255, 255, 0.5);
+            --input-focus: rgba(255, 255, 255, 0.8);
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-base);
+            background-image: 
+                radial-gradient(circle at 15% 50%, var(--bg-gradient-1), transparent 25%),
+                radial-gradient(circle at 85% 30%, var(--bg-gradient-2), transparent 25%);
+            background-size: 200% 200%;
+            animation: gradientMove 15s ease infinite;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .glass-panel {
+            background: var(--surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        h1, h2, h3, h4 { 
+            margin-top: 0; 
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-main);
+        }
+        
+        button {
+            background: var(--accent);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+
+        button:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--accent-glow);
+        }
+
+        input[type="text"], 
+        input[type="password"], 
+        input[type="datetime-local"], 
+        select {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            font-family: inherit;
+            box-sizing: border-box;
+            transition: all 0.2s;
+            outline: none;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent-glow);
+            background: var(--input-focus);
+        }
+        
+        /* Custom Checkbox */
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            padding: 0.75rem 1rem;
+            background: var(--input-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+        
+        .checkbox-wrapper:hover {
+            background: var(--input-focus);
+            border-color: var(--border);
+        }
+
+        .checkbox-wrapper input[type="checkbox"] {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--text-muted);
+            border-radius: 6px;
+            margin: 0;
+            margin-right: 12px;
+            display: grid;
+            place-content: center;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .checkbox-wrapper input[type="checkbox"]::before {
+            content: "";
+            width: 10px;
+            height: 10px;
+            box-shadow: inset 1em 1em white;
+            transform-origin: bottom left;
+            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+            transform: scale(0);
+            transition: 120ms transform ease-in-out;
+        }
+
+        .checkbox-wrapper input[type="checkbox"]:checked {
+            background-color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .checkbox-wrapper input[type="checkbox"]:checked::before {
+            transform: scale(1);
+        }
+
+        .hidden { display: none !important; }
+        
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 3rem;
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        
+        .nav h2 {
+            margin: 0;
+            color: var(--text-main);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            background: var(--surface-hover);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.2);
+        }
+        
+        .card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .card p {
+            margin: 0.2rem 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.35rem 0.85rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+        }
+
+        .badge-pending { background: rgba(245, 158, 11, 0.15); color: var(--pending); border: 1px solid rgba(245, 158, 11, 0.3); }
+        .badge-approved { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .badge-rejected { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+        .badge-unavailable { background: rgba(107, 114, 128, 0.15); color: var(--unavailable); border: 1px solid rgba(107, 114, 128, 0.3); }
+
+        #login-view {
+            max-width: 420px;
+            margin: auto;
+            margin-top: 10vh;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .action-buttons button {
+            padding: 0.6rem 1rem;
+            font-size: 0.85rem;
+            box-shadow: none;
+            flex: 1;
+            text-align: center;
+        }
+        
+        .btn-reject { background: transparent; color: var(--danger); border-color: var(--danger); }
+        .btn-reject:hover { background: rgba(239, 68, 68, 0.1); box-shadow: none; }
+        
+        .btn-handover { background: #8b5cf6; }
+        .btn-handover:hover { background: #7c3aed; }
+        
+        .btn-receive { background: #14b8a6; }
+        .btn-receive:hover { background: #0d9488; }
+        
+        .btn-outline { background: transparent; color: var(--text-main); border: 1px solid var(--border); box-shadow: none; }
+        .btn-outline:hover { background: rgba(128,128,128,0.1); box-shadow: none; }
+        
+        /* Theme toggle */
+        .theme-toggle {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: none;
+        }
+        .theme-toggle:hover {
+            background: var(--input-bg);
+            box-shadow: none;
+        }
+        .theme-toggle svg { width: 20px; height: 20px; fill: currentColor; }
+    </style>
+</head>
+<body>
+
+    <nav class="nav hidden" id="navbar">
+        <h2>Nexus Booking</h2>
+        <div style="display: flex; align-items: center; gap: 1.5rem;">
+            <div style="display: flex; flex-direction: column; align-items: flex-end;">
+                <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Logged in as</span>
+                <span id="user-display" style="font-weight: 600;"></span>
+            </div>
+            <button class="btn-outline" onclick="logout()" style="padding: 0.5rem 1rem;">Sign Out</button>
+            <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn" title="Toggle Theme">
+                <!-- Moon icon -->
+                <svg viewBox="0 0 24 24" id="theme-icon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            </button>
+        </div>
+    </nav>
+    
+    <!-- Login specific theme toggle when nav is hidden -->
+    <div id="login-theme-toggle" class="hidden" style="position: absolute; top: 1rem; right: 1rem;">
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+            <svg viewBox="0 0 24 24" class="theme-icon-login"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+    </div>
+
+    <!-- Login View -->
+    <div id="login-view" class="container glass-panel hidden">
+        <h2 style="text-align: center; margin-bottom: 2rem; font-size: 2rem;">Welcome Back</h2>
+        <label>Username</label>
+        <input type="text" id="username" placeholder="e.g. Admin, User1">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="••••••••">
+        <button style="width: 100%; margin-top: 1rem;" onclick="login()">Authenticate</button>
+        <p id="login-error" style="color: var(--danger); text-align: center; margin-top: 1rem; font-size: 0.9rem;"></p>
+    </div>
+
+    <!-- User Dashboard -->
+    <div id="user-view" class="container hidden">
+        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+            <div class="glass-panel" style="height: fit-content;">
+                <h3>Reserve Equipment</h3>
+                <label>Select Kit</label>
+                <select id="kit-select">
+                    <option value="1">Media Production Kit</option>
+                </select>
+                <label>Start Time</label>
+                <input type="datetime-local" id="start-time">
+                <label>End Time</label>
+                <input type="datetime-local" id="end-time">
+                <button style="width: 100%; margin-top: 0.5rem;" onclick="createBooking()">Confirm Reservation</button>
+                <p id="booking-msg" style="margin-top: 1rem; font-size: 0.9rem; text-align: center;"></p>
+            </div>
+            
+            <div class="glass-panel" style="grid-column: 1 / -1; @media (min-width: 900px) { grid-column: 2 / 4; }">
+                <h3>My Reservations</h3>
+                <div id="my-bookings-list" class="grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="admin-view" class="container hidden">
+        <div class="glass-panel" style="margin-bottom: 2rem;">
+            <h3>All Bookings</h3>
+            <button onclick="fetchAdminBookings()" style="margin-bottom: 1rem;">Refresh List</button>
+            <div id="all-bookings-list" class="grid"></div>
+        </div>
+        
+        <div class="glass-panel">
+            <h3>Update Kit Condition (Kit ID: 1)</h3>
+            <label><input type="checkbox" id="cond-camera"> Camera Working</label><br>
+            <label><input type="checkbox" id="cond-mic"> Mic Working</label><br>
+            <label><input type="checkbox" id="cond-tripod"> Tripod Working</label><br><br>
+            <button onclick="updateKitCondition()">Update Condition</button>
+            <p id="cond-msg"></p>
+        </div>
+    </div>
+
+    <script>
+        let token = localStorage.getItem('token');
+        let role = localStorage.getItem('role');
+        
+        // Theme logic
+        let isLight = localStorage.getItem('theme') === 'light';
+        const sunIcon = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+        const moonIcon = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+        
+        function updateTheme() {
+            if (isLight) {
+                document.documentElement.setAttribute('data-theme', 'light');
+                document.getElementById('theme-icon').innerHTML = moonIcon;
+                document.querySelector('.theme-icon-login').innerHTML = moonIcon;
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                document.getElementById('theme-icon').innerHTML = sunIcon;
+                document.querySelector('.theme-icon-login').innerHTML = sunIcon;
+            }
+        }
+        
+        function toggleTheme() {
+            isLight = !isLight;
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            updateTheme();
+        }
+        
+        updateTheme(); // Apply initial theme
+
+        function showView(viewId) {
+            document.getElementById('login-view').classList.add('hidden');
+            document.getElementById('user-view').classList.add('hidden');
+            document.getElementById('admin-view').classList.add('hidden');
+            document.getElementById('navbar').classList.add('hidden');
+            document.getElementById('login-theme-toggle').classList.add('hidden');
+            
+            if (viewId !== 'login-view') {
+                document.getElementById('navbar').classList.remove('hidden');
+                document.getElementById('user-display').textContent = role;
+            } else {
+                document.getElementById('login-theme-toggle').classList.remove('hidden');
+            }
+            
+            const view = document.getElementById(viewId);
+            view.classList.remove('hidden');
+            
+            // Add slight fade-in animation
+            view.style.opacity = '0';
+            view.style.transform = 'translateY(10px)';
+            view.style.transition = 'all 0.4s ease';
+            
+            setTimeout(() => {
+                view.style.opacity = '1';
+                view.style.transform = 'translateY(0)';
+            }, 10);
+        }
+
+        function init() {
+            if (token && role) {
+                if (role === 'ADMIN') {
+                    showView('admin-view');
+                    fetchAdminBookings();
+                } else {
+                    showView('user-view');
+                    fetchMyBookings();
+                }
+            } else {
+                showView('login-view');
+            }
+        }
+
+        async function login() {
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            const btn = document.querySelector('#login-view button');
+            const originalText = btn.textContent;
+            
+            btn.textContent = 'Verifying...';
+            btn.style.opacity = '0.7';
+            
+            try {
+                const res = await fetch('/api/login/', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({username: u, password: p})
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    token = data.token;
+                    role = data.role;
+                    localStorage.setItem('token', token);
+                    localStorage.setItem('role', role);
+                    init();
+                } else {
+                    document.getElementById('login-error').textContent = data.error;
+                }
+            } finally {
+                btn.textContent = originalText;
+                btn.style.opacity = '1';
+            }
+        }
+
+        function logout() {
+            token = null; role = null;
+            localStorage.removeItem('token');
+            localStorage.removeItem('role');
+            init();
+        }
+
+        async function authFetch(url, options = {}) {
+            if (!options.headers) options.headers = {};
+            options.headers['Authorization'] = 'Bearer ' + token;
+            const res = await fetch(url, options);
+            if (res.status === 401) logout();
+            return res;
+        }
+
+        // USER FUNCTIONS
+        async function createBooking() {
+            const startStr = document.getElementById('start-time').value;
+            const endStr = document.getElementById('end-time').value;
+            const msg = document.getElementById('booking-msg');
+            
+            if(!startStr || !endStr) {
+                msg.style.color = 'var(--danger)';
+                msg.textContent = 'Please select both times.';
+                return;
+            }
+            
+            const start = new Date(startStr).getTime() / 1000;
+            const end = new Date(endStr).getTime() / 1000;
+            
+            const res = await authFetch('/api/bookings/', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({kit_id: '1', start_time: start, end_time: end})
+            });
+            const data = await res.json();
+            if (res.ok) {
+                msg.style.color = 'var(--success)';
+                msg.textContent = 'Reservation successful!';
+                fetchMyBookings();
+            } else {
+                msg.style.color = 'var(--danger)';
+                msg.textContent = data.error || 'Error creating reservation';
+            }
+        }
+
+        const statuses = {0: "Pending", 1: "Approved", 2: "Rejected", 3: "Unavailable"};
+        const badgeClasses = {0: "badge-pending", 1: "badge-approved", 2: "badge-rejected", 3: "badge-unavailable"};
+
+        function formatDate(timestamp) {
+            const d = new Date(timestamp * 1000);
+            return d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+        }
+
+        async function fetchMyBookings() {
+            const res = await authFetch('/api/bookings/mine/');
+            const data = await res.json();
+            const list = document.getElementById('my-bookings-list');
+            list.innerHTML = '';
+            
+            if (data.bookings && data.bookings.length > 0) {
+                data.bookings.forEach(b => {
+                    list.innerHTML += `
+                        <div class="card">
+                            <h4>Kit ${b.kit_id}</h4>
+                            <p style="color: var(--text-main); font-weight: 500; font-size: 1rem; margin-top: 0.5rem;">${formatDate(b.start_time)} &rarr; ${formatDate(b.end_time)}</p>
+                            <span class="status-badge ${badgeClasses[b.status]}">${statuses[b.status]}</span>
+                            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                                <p style="margin: 0; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em;">Status</p>
+                                <p style="margin: 0; font-weight: 500; color: var(--text-main);">${b.handover_state.replace(/_/g, ' ')}</p>
+                            </div>
+                            ${b.comment ? `<div style="margin-top: 0.75rem; padding: 0.75rem; background: rgba(239, 68, 68, 0.1); border-left: 2px solid var(--danger); border-radius: 4px;"><p style="color: var(--danger); font-size: 0.85rem; margin: 0;">${b.comment}</p></div>` : ''}
+                        </div>
+                    `;
+                });
+            } else {
+                list.innerHTML = `<p style="color: var(--text-muted); text-align: center; padding: 2rem 0; width: 100%;">You don't have any reservations yet.</p>`;
+            }
+        }
+
+        // ADMIN FUNCTIONS
+        async function fetchAdminBookings() {
+            const res = await authFetch('/api/admin/bookings/');
+            const data = await res.json();
+            const list = document.getElementById('all-bookings-list');
+            list.innerHTML = '';
+            
+            if (data.bookings) {
+                data.bookings.forEach(b => {
+                    const startStr = new Date(b.start_time * 1000).toLocaleString();
+                    const endStr = new Date(b.end_time * 1000).toLocaleString();
+                    
+                    let actions = '';
+                    if (b.status === 0 || b.status === 3) {
+                        actions += `<button onclick="adminAction('${b.id}', 'approve')" style="padding:0.5rem; margin-right:0.5rem">Approve</button>`;
+                        actions += `<button onclick="promptReject('${b.id}')" style="padding:0.5rem; background:var(--danger)">Reject</button>`;
+                    }
+                    if (b.status === 1 && b.handover_state === 'NOT_HANDED_OVER') {
+                        actions += `<button onclick="adminAction('${b.id}', 'handover')" style="padding:0.5rem; margin-top:0.5rem">Handover Kit</button>`;
+                    }
+                    if (b.handover_state === 'HANDED_OVER') {
+                        actions += `<button onclick="promptReceive('${b.id}')" style="padding:0.5rem; margin-top:0.5rem; background:#8b5cf6">Receive Kit</button>`;
+                    }
+
+                    list.innerHTML += `
+                        <div class="card">
+                            <h4>User: ${b.name} (Kit ${b.kit_id})</h4>
+                            <p>${startStr} - ${endStr}</p>
+                            <span class="status-badge ${badgeClasses[b.status]}">${statuses[b.status]}</span>
+                            <p style="font-size:0.875rem; margin-top:0.5rem">State: ${b.handover_state}</p>
+                            ${b.comment ? `<p style="color:var(--danger); font-size:0.8rem;">Note: ${b.comment}</p>` : ''}
+                            <div style="margin-top: 1rem;">${actions}</div>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        async function adminAction(id, action) {
+            const res = await authFetch(`/api/admin/bookings/${id}/${action}/`, {method: 'POST'});
+            const data = await res.json();
+            if (res.ok) {
+                fetchAdminBookings();
+            } else {
+                alert('Action Failed: ' + data.error);
+            }
+        }
+
+        async function promptReject(id) {
+            const comment = prompt("Reason for rejection:");
+            if (comment) {
+                const res = await authFetch(`/api/admin/bookings/${id}/reject/`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({comment})
+                });
+                if (res.ok) fetchAdminBookings();
+                else alert('Error: ' + (await res.json()).error);
+            }
+        }
+
+        async function promptReceive(id) {
+            const missing = prompt("Any missing/damaged items? (camera,mic,tripod). Leave empty if all returned fine.");
+            const items = missing ? missing.split(',').map(s=>s.trim()).filter(s => s) : [];
+            const comment = items.length > 0 ? prompt("Please add a note about the issue:") : "";
+            
+            const res = await authFetch(`/api/admin/bookings/${id}/receive/`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({items, comment})
+            });
+            if (res.ok) fetchAdminBookings();
+            else alert('Error: ' + (await res.json()).error);
+        }
+
+        async function updateKitCondition() {
+            const cam = document.getElementById('cond-camera').checked;
+            const mic = document.getElementById('cond-mic').checked;
+            const tripod = document.getElementById('cond-tripod').checked;
+            
+            const msg = document.getElementById('cond-msg');
+            msg.textContent = 'Saving...';
+            
+            const res = await authFetch('/api/admin/kits/1/condition/', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({camera: cam, mic: mic, fixed_tripod: tripod})
+            });
+            
+            if (res.ok) {
+                msg.style.color = 'var(--success)';
+                msg.textContent = "Diagnostics updated successfully!";
+                setTimeout(() => msg.textContent = '', 3000);
+            } else {
+                msg.style.color = 'var(--danger)';
+                msg.textContent = "Update failed.";
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
