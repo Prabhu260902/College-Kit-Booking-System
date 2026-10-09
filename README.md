@@ -4,7 +4,7 @@ This is a local application to book an equipment kit.
 
 ## Tech Stack
 - **Backend**: Django 4.2
-- **Frontend**: Django templates, HTML, CSS (Glassmorphism aesthetics), basic JavaScript
+- **Frontend**: Django templates, HTML, CSS (neo-glass aesthetic with Light/Dark mode), basic JavaScript
 - **Database**: MongoDB (PyMongo)
 - **Authentication**: Custom JWT
 
