@@ -1,4 +1,4 @@
-# Low-Level Design (LLD) - College Event Kit Booking System
+# Low-Level Design (LLD) - College Event Kit Booking Systems
 
 ### 1. Purpose
 Build a local application where users book an equipment kit and an admin manages approval, handover, return, and equipment issues.
